@@ -40,7 +40,7 @@ class AuthService {
         '/auth/register',
         data: {
           'name': name,
-          'phone': phone,
+          'phoneNumber': phone,
           'preferences': preferences,
           'location': location,
           'email': email,

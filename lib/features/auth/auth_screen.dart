@@ -191,13 +191,15 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SafeArea(
         child: Column(
           children: [
             // Progress Indicator
-            _buildProgressIndicator(),
+            _buildProgressIndicator(colorScheme),
 
             // PageView
             Expanded(
@@ -205,9 +207,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _buildIdentityStep(),
-                  _buildBaseStep(),
-                  _buildSecurityStep(),
+                  _buildIdentityStep(theme, colorScheme),
+                  _buildBaseStep(theme, colorScheme),
+                  _buildSecurityStep(theme, colorScheme),
                 ],
               ),
             ),
@@ -217,7 +219,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildProgressIndicator() {
+  Widget _buildProgressIndicator(ColorScheme colorScheme) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -228,8 +230,8 @@ class _AuthScreenState extends State<AuthScreen> {
               height: 3,
               decoration: BoxDecoration(
                 color: index <= _currentStep
-                    ? const Color(0xFF00D9FF)
-                    : Colors.grey.shade800,
+                    ? colorScheme.primary
+                    : colorScheme.outlineVariant,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -239,58 +241,57 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildIdentityStep() {
+  Widget _buildIdentityStep(ThemeData theme, ColorScheme colorScheme) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'IDENTITY',
-            style: TextStyle(
-              color: Color(0xFF00D9FF),
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 2,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: colorScheme.primary,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Establish Identity',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text('Establish Identity', style: theme.textTheme.headlineLarge),
           const SizedBox(height: 40),
 
           // Full Name
-          _buildTextField(
+          Text(
+            'FULL NAME',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
             controller: _nameController,
-            label: 'FULL NAME',
-            hint: 'Enter your full name',
+            decoration: const InputDecoration(hintText: 'Enter your full name'),
           ),
           const SizedBox(height: 24),
 
           // Phone Number
-          _buildTextField(
+          Text(
+            'PHONE NUMBER',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
             controller: _phoneController,
-            label: 'PHONE NUMBER',
-            hint: '+1 234 567 8900',
             keyboardType: TextInputType.phone,
+            decoration: const InputDecoration(hintText: '+1 234 567 8900'),
           ),
           const SizedBox(height: 32),
 
           // Directives (Preferences)
-          const Text(
+          Text(
             'DIRECTIVES',
-            style: TextStyle(
-              color: Color(0xFF00D9FF),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.5,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: colorScheme.primary,
             ),
           ),
           const SizedBox(height: 12),
@@ -311,29 +312,13 @@ class _AuthScreenState extends State<AuthScreen> {
                     }
                   });
                 },
-                backgroundColor: Colors.grey.shade900,
-                selectedColor: const Color(0xFF00D9FF).withOpacity(0.3),
-                labelStyle: TextStyle(
-                  color: isSelected
-                      ? const Color(0xFF00D9FF)
-                      : Colors.grey.shade400,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                ),
-                side: BorderSide(
-                  color: isSelected
-                      ? const Color(0xFF00D9FF)
-                      : Colors.grey.shade800,
-                ),
               );
             }).toList(),
           ),
 
           if (_errorMessage != null && _currentStep == 0) ...[
             const SizedBox(height: 24),
-            Text(
-              _errorMessage!,
-              style: const TextStyle(color: Colors.redAccent),
-            ),
+            Text(_errorMessage!, style: TextStyle(color: colorScheme.error)),
           ],
 
           const SizedBox(height: 40),
@@ -348,21 +333,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   MaterialPageRoute(builder: (_) => const LoginScreen()),
                 );
               },
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF00D9FF),
-                side: const BorderSide(color: Color(0xFF00D9FF)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'BACK TO LOGIN',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
+              child: const Text('BACK TO LOGIN'),
             ),
           ),
           const SizedBox(height: 16),
@@ -373,21 +344,7 @@ class _AuthScreenState extends State<AuthScreen> {
             height: 56,
             child: ElevatedButton(
               onPressed: _nextStep,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00D9FF),
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'NEXT',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
+              child: const Text('NEXT'),
             ),
           ),
         ],
@@ -395,84 +352,49 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildBaseStep() {
+  Widget _buildBaseStep(ThemeData theme, ColorScheme colorScheme) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'BASE',
-            style: TextStyle(
-              color: Color(0xFF00D9FF),
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 2,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: colorScheme.primary,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Set Location',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text('Set Location', style: theme.textTheme.headlineLarge),
           const SizedBox(height: 40),
 
           // Location with Locate Button
-          const Text(
+          Text(
             'LOCATION',
-            style: TextStyle(
-              color: Color(0xFF00D9FF),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.5,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.primary,
             ),
           ),
           const SizedBox(height: 8),
           TextField(
             controller: _locationController,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
             decoration: InputDecoration(
               hintText: 'Enter your location',
-              hintStyle: TextStyle(color: Colors.grey.shade600),
-              filled: true,
-              fillColor: Colors.grey.shade900,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey.shade800),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(
-                  color: Color(0xFF00D9FF),
-                  width: 2,
-                ),
-              ),
               suffixIcon: _isLocating
-                  ? const Padding(
-                      padding: EdgeInsets.all(12),
+                  ? Padding(
+                      padding: const EdgeInsets.all(12),
                       child: SizedBox(
                         width: 24,
                         height: 24,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Color(0xFF00D9FF),
+                          color: colorScheme.primary,
                         ),
                       ),
                     )
                   : IconButton(
-                      icon: const Icon(
-                        Icons.my_location,
-                        color: Color(0xFF00D9FF),
-                      ),
+                      icon: Icon(Icons.my_location, color: colorScheme.primary),
                       onPressed: _locateBase,
                       tooltip: 'Locate Base',
                     ),
@@ -481,10 +403,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
           if (_errorMessage != null && _currentStep == 1) ...[
             const SizedBox(height: 16),
-            Text(
-              _errorMessage!,
-              style: const TextStyle(color: Colors.redAccent),
-            ),
+            Text(_errorMessage!, style: TextStyle(color: colorScheme.error)),
           ],
 
           const SizedBox(height: 40),
@@ -497,21 +416,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   height: 56,
                   child: OutlinedButton(
                     onPressed: _previousStep,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF00D9FF),
-                      side: const BorderSide(color: Color(0xFF00D9FF)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'BACK',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
+                    child: const Text('BACK'),
                   ),
                 ),
               ),
@@ -521,21 +426,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   height: 56,
                   child: ElevatedButton(
                     onPressed: _nextStep,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00D9FF),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'NEXT',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
+                    child: const Text('NEXT'),
                   ),
                 ),
               ),
@@ -546,56 +437,59 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildSecurityStep() {
+  Widget _buildSecurityStep(ThemeData theme, ColorScheme colorScheme) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'SECURITY',
-            style: TextStyle(
-              color: Color(0xFF00D9FF),
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 2,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: colorScheme.primary,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Establish Credentials',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text('Establish Credentials', style: theme.textTheme.headlineLarge),
           const SizedBox(height: 40),
 
           // Email
-          _buildTextField(
+          Text(
+            'EMAIL',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
             controller: _emailController,
-            label: 'EMAIL',
-            hint: 'your.email@example.com',
             keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              hintText: 'your.email@example.com',
+            ),
           ),
           const SizedBox(height: 24),
 
           // Password
-          _buildTextField(
+          Text(
+            'PASSWORD',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
             controller: _passwordController,
-            label: 'PASSWORD',
-            hint: 'Enter secure password',
             obscureText: true,
+            decoration: const InputDecoration(
+              hintText: 'Enter secure password',
+            ),
           ),
 
           if (_errorMessage != null && _currentStep == 2) ...[
             const SizedBox(height: 24),
-            Text(
-              _errorMessage!,
-              style: const TextStyle(color: Colors.redAccent),
-            ),
+            Text(_errorMessage!, style: TextStyle(color: colorScheme.error)),
           ],
 
           const SizedBox(height: 40),
@@ -606,21 +500,7 @@ class _AuthScreenState extends State<AuthScreen> {
             height: 56,
             child: OutlinedButton(
               onPressed: _previousStep,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF00D9FF),
-                side: const BorderSide(color: Color(0xFF00D9FF)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'BACK',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
+              child: const Text('BACK'),
             ),
           ),
           const SizedBox(height: 16),
@@ -631,85 +511,20 @@ class _AuthScreenState extends State<AuthScreen> {
             height: 64,
             child: ElevatedButton(
               onPressed: _isLoading ? null : _initiateProtocol,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00D9FF),
-                foregroundColor: Colors.black,
-                disabledBackgroundColor: Colors.grey.shade800,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 8,
-                shadowColor: const Color(0xFF00D9FF).withOpacity(0.5),
-              ),
               child: _isLoading
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 24,
                       height: 24,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.black,
+                        color: colorScheme.onPrimary,
                       ),
                     )
-                  : const Text(
-                      'INITIATE PROTOCOL',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                      ),
-                    ),
+                  : const Text('INITIATE PROTOCOL'),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    TextInputType? keyboardType,
-    bool obscureText = false,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Color(0xFF00D9FF),
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.5,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          style: const TextStyle(color: Colors.white, fontSize: 16),
-          keyboardType: keyboardType,
-          obscureText: obscureText,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(color: Colors.grey.shade600),
-            filled: true,
-            fillColor: Colors.grey.shade900,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade800),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF00D9FF), width: 2),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

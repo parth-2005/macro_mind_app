@@ -107,8 +107,10 @@ class ApiService {
   // Profile API methods
   Future<ProfileModel> getProfile() async {
     try {
-      final response = await _dio.get('/profile');
+      final response = await _dio.get('/profile/me');
       if (response.statusCode == 200) {
+        print('DEBUG: response.data type: ${response.data.runtimeType}');
+        print('DEBUG: response.data: ${response.data}');
         return ProfileModel.fromJson(response.data);
       } else {
         throw Exception('Failed to load profile');

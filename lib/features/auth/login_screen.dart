@@ -68,8 +68,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -77,48 +79,54 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 60),
-              const Text(
+              Text(
                 'LOGIN',
-                style: TextStyle(
-                  color: Color(0xFF00D9FF),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Welcome Back',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Text('Welcome Back', style: theme.textTheme.headlineLarge),
               const SizedBox(height: 60),
 
               // Email
-              _buildTextField(
+              Text(
+                'EMAIL',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
                 controller: _emailController,
-                label: 'EMAIL',
-                hint: 'your.email@example.com',
                 keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  hintText: 'your.email@example.com',
+                ),
               ),
               const SizedBox(height: 24),
 
               // Password
-              _buildTextField(
+              Text(
+                'PASSWORD',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
                 controller: _passwordController,
-                label: 'PASSWORD',
-                hint: 'Enter your password',
                 obscureText: true,
+                decoration: const InputDecoration(
+                  hintText: 'Enter your password',
+                ),
               ),
 
               if (_errorMessage != null) ...[
                 const SizedBox(height: 24),
                 Text(
                   _errorMessage!,
-                  style: const TextStyle(color: Colors.redAccent),
+                  style: TextStyle(color: colorScheme.error),
                 ),
               ],
 
@@ -130,31 +138,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00D9FF),
-                    foregroundColor: Colors.black,
-                    disabledBackgroundColor: Colors.grey.shade800,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
                   child: _isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 24,
                           height: 24,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.black,
+                            color: colorScheme.onPrimary,
                           ),
                         )
-                      : const Text(
-                          'LOGIN',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
+                      : const Text('LOGIN'),
                 ),
               ),
 
@@ -165,16 +158,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextButton(
                   onPressed: _goToRegister,
                   child: RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       text: 'New user? ',
-                      style: TextStyle(color: Colors.grey),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurface.withOpacity(0.6),
+                      ),
                       children: [
                         TextSpan(
                           text: 'INITIATE PROTOCOL',
-                          style: TextStyle(
-                            color: Color(0xFF00D9FF),
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: colorScheme.primary,
                           ),
                         ),
                       ],
@@ -186,54 +179,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    TextInputType? keyboardType,
-    bool obscureText = false,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Color(0xFF00D9FF),
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.5,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          style: const TextStyle(color: Colors.white, fontSize: 16),
-          keyboardType: keyboardType,
-          obscureText: obscureText,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(color: Colors.grey.shade600),
-            filled: true,
-            fillColor: Colors.grey.shade900,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade800),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF00D9FF), width: 2),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

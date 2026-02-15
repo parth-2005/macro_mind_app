@@ -5,6 +5,7 @@ import 'package:macro_mind_app/features/cards/card.provider.dart';
 import 'package:macro_mind_app/features/profile/profile.provider.dart';
 import 'package:macro_mind_app/features/home/home.screen.dart';
 import 'package:macro_mind_app/core/services/auth_service.dart';
+import 'package:macro_mind_app/core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'MacroMind',
-        theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+        theme: AppTheme.lightTheme,
         home: const AuthWrapper(),
       ),
     );
