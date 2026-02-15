@@ -27,11 +27,25 @@ class AuthService {
     }
   }
 
-  Future<bool> register(String email, String password) async {
+  Future<bool> register({
+    required String name,
+    required String phone,
+    required List<String> preferences,
+    required String location,
+    required String email,
+    required String password,
+  }) async {
     try {
       final response = await _apiService.dio.post(
         '/auth/register',
-        data: {'email': email, 'password': password},
+        data: {
+          'name': name,
+          'phone': phone,
+          'preferences': preferences,
+          'location': location,
+          'email': email,
+          'password': password,
+        },
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

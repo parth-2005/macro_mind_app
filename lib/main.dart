@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:macro_mind_app/features/auth/auth_screen.dart';
+import 'package:macro_mind_app/features/auth/login_screen.dart';
 import 'package:macro_mind_app/features/cards/card.provider.dart';
 import 'package:macro_mind_app/features/profile/profile.provider.dart';
 import 'package:macro_mind_app/features/home/home.screen.dart';
@@ -59,6 +59,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
     if (_isLoggedIn == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    return _isLoggedIn! ? const HomeScreen() : const AuthScreen();
+    return _isLoggedIn! ? const HomeScreen() : const LoginScreen();
   }
 }
