@@ -38,6 +38,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     'Dancing',
     'Fashion',
     'Nature',
+    'Food',
   ];
 
   @override
